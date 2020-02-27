@@ -1,4 +1,4 @@
-# SQL-Agent-JobUtilities
+# SQL-Agent-Job-Utilities
 Collection of utilities for SQL Server Agent
 
 # Job Launcher
