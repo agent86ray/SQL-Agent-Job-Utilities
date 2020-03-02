@@ -63,11 +63,13 @@
   <ItemGroup>
     <Build Include="Tables\JOB_MONITOR.sql" />
     <Build Include="Tables\JOB_MONITOR_EVENT.sql" />
+    <Build Include="Tables\JOB_MONITOR_EVENT_OPTION.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment1.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\CRM_SQL_AGENT_JOB_QUERIES.sql" />
+    <None Include="Scripts\SETUP_JOB_LAUNCH.sql" />
   </ItemGroup>
 </Project>
