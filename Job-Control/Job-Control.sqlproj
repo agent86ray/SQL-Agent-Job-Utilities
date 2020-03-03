@@ -59,11 +59,13 @@
     <Folder Include="Properties" />
     <Folder Include="Tables" />
     <Folder Include="Scripts" />
+    <Folder Include="Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\JOB_MONITOR.sql" />
     <Build Include="Tables\JOB_MONITOR_EVENT.sql" />
     <Build Include="Tables\JOB_MONITOR_EVENT_OPTION.sql" />
+    <Build Include="Tables\JOB_LAUNCH_QUEUE.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment1.sql" />
