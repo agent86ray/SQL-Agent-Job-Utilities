@@ -68,7 +68,7 @@
     <Build Include="Tables\JOB_LAUNCH_QUEUE.sql" />
     <Build Include="Tables\QUEUE_JOB_LOG.sql" />
     <Build Include="Stored Procedures\QUEUE_JOBS_TO_LAUNCH.sql" />
-    <Build Include="Tables\QUEUE_JOBS_TO_LAUNCH_STAGING.sql" />
+    <Build Include="Tables\JOB_MONITOR_JOB_HISTORY_STAGING.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment1.sql" />
