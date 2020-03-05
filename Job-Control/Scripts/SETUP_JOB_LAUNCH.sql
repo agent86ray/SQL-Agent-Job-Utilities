@@ -45,3 +45,26 @@ JOIN [msdb].[dbo].[sysjobs] j
 	ON j.job_id = m.[JOB_ID]
 JOIN [dbo].[JOB_MONITOR_EVENT] e
 	ON e.[JOB_MONITOR_EVENT_ID] = o.[JOB_MONITOR_EVENT_ID]
+
+
+
+-- Monitor job step completion
+-- JOB: CRM SSAS CUBE PROCESS  STEP: PROCESS CUBE 
+-- Doing update because row existed (normally do insert)
+UPDATE [dbo].[JOB_MONITOR]
+SET
+	JOB_ID = '8ECB9766-9326-4118-B08D-7F4F6D04DF26'
+,	JOB_STEP_UID = 'D4305401-41E9-4E93-8AC3-DA2FFA071A60'
+WHERE JOB_MONITOR_ID = 2
+
+
+-- insert row into [dbo].[JOB_MONITOR_EVENT_OPTION] for the job_id, JOB_MONITOR_ID
+INSERT [dbo].[JOB_MONITOR_EVENT_OPTION] (
+	[JOB_MONITOR_ID]
+,	[JOB_MONITOR_EVENT_ID]	
+)
+VALUES (
+	2
+,	2	-- step completed successfully
+)
+
