@@ -70,19 +70,48 @@ BEGIN
 	-- INSERT ...
 	SELECT
 		s.JOB_ID
-	,	s.[step_id]
+	,	NULL		-- Job Step UID
 	,	s.[run_status]
+	,	o.[JOB_MONITOR_EVENT_OPTION_ID]
 	FROM [dbo].[JOB_MONITOR_JOB_HISTORY_STAGING] s
 	JOIN [dbo].[JOB_MONITOR] m
 		ON m.JOB_ID = s.JOB_ID
 	JOIN [dbo].[JOB_MONITOR_EVENT_OPTION] o
 		ON o.JOB_MONITOR_ID = m.JOB_MONITOR_ID
+	JOIN [dbo].[JOB_MONITOR_EVENT] e
+		ON e.[JOB_MONITOR_EVENT_ID] = o.[JOB_MONITOR_EVENT_ID]
 	WHERE m.[ENABLED] = 1
-	AND o.[ENABLED] = 1;
+	AND o.[ENABLED] = 1
+	AND s.[step_id] = 0		-- Job Completion
+	AND (
+			-- JOB COMPLETED SUCCESSFULLY
+			(e.JOB_MONITOR_EVENT_ID = 1	AND s.[run_status] = 1)
+	)
 
 
 	-- queue any jobs that need to be launched based on
 	-- job step completion - check [JOB_STEP_UID] from JOB_MONITOR
+	SELECT
+		s.JOB_ID
+	,	m.JOB_STEP_UID
+	,	s.[run_status]
+	,	o.[JOB_MONITOR_EVENT_OPTION_ID]
+	FROM [dbo].[JOB_MONITOR_JOB_HISTORY_STAGING] s
+	JOIN [msdb].[dbo].[sysjobsteps] j
+		ON j.job_id = s.JOB_ID AND j.step_id = s.STEP_ID
+	JOIN [dbo].[JOB_MONITOR] m
+		ON m.JOB_ID = s.JOB_ID AND m.JOB_STEP_UID = j.step_uid
+	JOIN [dbo].[JOB_MONITOR_EVENT_OPTION] o
+		ON o.JOB_MONITOR_ID = m.JOB_MONITOR_ID
+	JOIN [dbo].[JOB_MONITOR_EVENT] e
+		ON e.[JOB_MONITOR_EVENT_ID] = o.[JOB_MONITOR_EVENT_ID]
+	WHERE m.[ENABLED] = 1
+	AND o.[ENABLED] = 1
+	AND s.[step_id] > 0		-- Job Step Completion
+	AND (
+			-- JOB STEP COMPLETED SUCCESSFULLY
+			(e.JOB_MONITOR_EVENT_ID = 2	AND s.[run_status] = 1)
+	)
 
 
 	--
