@@ -1,9 +1,20 @@
-﻿CREATE PROCEDURE [dbo].[QUEUE_JOBS_TO_LAUNCH]
+﻿/*
+
+	EXEC [dbo].[QUEUE_JOBS_TO_LAUNCH];
+
+	SELECT * FROM [dbo].[QUEUE_JOB_LOG]; 
+
+	SELECT * FROM [dbo].[JOB_LAUNCH_QUEUE];
+
+*/
+CREATE PROCEDURE [dbo].[QUEUE_JOBS_TO_LAUNCH]
 AS
 BEGIN
 	DECLARE 
 		@RUN_TIME			DATETIME = GETDATE()
-	,	@MAX_INSTANCE_ID	INT;
+	,	@MAX_INSTANCE_ID	INT
+	,	@QUEUE_JOB_LOG_ID	INT
+	,	@JOBS_QUEUED_COUNT	INT = 0;
 
 	-- Get the MAX_INSTANCE_ID from the last run
 	SELECT TOP 1
@@ -13,8 +24,6 @@ BEGIN
 
 	IF @MAX_INSTANCE_ID IS NULL
 		SET @MAX_INSTANCE_ID = 0;
-
-	SELECT @MAX_INSTANCE_ID AS DEBUG_MAX_INSTANCE_ID;
 
 	TRUNCATE TABLE [dbo].[JOB_MONITOR_JOB_HISTORY_STAGING];
 
@@ -67,12 +76,11 @@ BEGIN
 	-- queue any jobs that need to be launched based on
 	-- job completion
 	--
-	-- INSERT ...
+	INSERT [dbo].[JOB_LAUNCH_QUEUE] (
+		[JOB_MONITOR_EVENT_OPTION_ID]
+	)
 	SELECT
-		s.JOB_ID
-	,	NULL		-- Job Step UID
-	,	s.[run_status]
-	,	o.[JOB_MONITOR_EVENT_OPTION_ID]
+		o.[JOB_MONITOR_EVENT_OPTION_ID]
 	FROM [dbo].[JOB_MONITOR_JOB_HISTORY_STAGING] s
 	JOIN [dbo].[JOB_MONITOR] m
 		ON m.JOB_ID = s.JOB_ID
@@ -88,14 +96,15 @@ BEGIN
 			(e.JOB_MONITOR_EVENT_ID = 1	AND s.[run_status] = 1)
 	)
 
+	SET @JOBS_QUEUED_COUNT += @@ROWCOUNT;
 
 	-- queue any jobs that need to be launched based on
 	-- job step completion - check [JOB_STEP_UID] from JOB_MONITOR
+	INSERT [dbo].[JOB_LAUNCH_QUEUE] (
+		[JOB_MONITOR_EVENT_OPTION_ID]
+	)
 	SELECT
-		s.JOB_ID
-	,	m.JOB_STEP_UID
-	,	s.[run_status]
-	,	o.[JOB_MONITOR_EVENT_OPTION_ID]
+		o.[JOB_MONITOR_EVENT_OPTION_ID]
 	FROM [dbo].[JOB_MONITOR_JOB_HISTORY_STAGING] s
 	JOIN [msdb].[dbo].[sysjobsteps] j
 		ON j.job_id = s.JOB_ID AND j.step_id = s.STEP_ID
@@ -113,9 +122,20 @@ BEGIN
 			(e.JOB_MONITOR_EVENT_ID = 2	AND s.[run_status] = 1)
 	)
 
+	SET @JOBS_QUEUED_COUNT += @@ROWCOUNT;
 
 	--
 	-- update [dbo].[QUEUE_JOB_LOG]
 	--
+	INSERT [dbo].[QUEUE_JOB_LOG] (
+		[RUN_TIME]
+	,	[MAX_INSTANCE_ID]
+	,	[ROW_COUNT]
+	)
+	VALUES (
+		@RUN_TIME
+	,	@MAX_INSTANCE_ID
+	,	@JOBS_QUEUED_COUNT
+	);
 END
 
