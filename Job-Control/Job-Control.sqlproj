@@ -70,6 +70,7 @@
     <Build Include="Stored Procedures\QUEUE_JOBS_TO_LAUNCH.sql" />
     <Build Include="Tables\JOB_MONITOR_JOB_HISTORY_STAGING.sql" />
     <Build Include="Stored Procedures\ADD_JOB_TO_MONITOR.sql" />
+    <Build Include="Stored Procedures\LAUNCH_JOBS_FROM_QUEUE.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment1.sql" />
