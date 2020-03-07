@@ -3,68 +3,33 @@
 --
 
 -- 
--- Launch CRM SSAS CUBE PROCESS job when CRM DATA MART DAILY ETL job
--- completes duccussfully
+-- Script to add jobs and job steps to monitor
 --
 
-SELECT *
-FROM [dbo].[JOB_MONITOR_EVENT];
+	SELECT * FROM [dbo].[JOB_MONITOR]
 
--- monitor the CRM DATA MART DAILY ETL job for completed successfully
--- insert row into [dbo].[JOB_MONITOR] for the job_id
-INSERT [dbo].[JOB_MONITOR] (
-	[JOB_ID]
-)
-VALUES (
-	'FBA49241-3339-49F1-9A29-805E097210E3'
-)
+	-- test monitor for job completed successfully
+	EXEC [dbo].[ADD_JOB_TO_MONITOR]
+		@JOB_ID_TO_MONITOR = 'FBA49241-3339-49F1-9A29-805E097210E3'
+	,	@JOB_ID_TO_LAUNCH = '8ECB9766-9326-4118-B08D-7F4F6D04DF26'
+	,	@JOB_MONITOR_EVENT_ID = 1
 
-SELECT *
-FROM [dbo].[JOB_MONITOR];
- 
--- insert row into [dbo].[JOB_MONITOR_EVENT_OPTION] for the job_id, JOB_MONITOR_ID
-INSERT [dbo].[JOB_MONITOR_EVENT_OPTION] (
-	[JOB_MONITOR_ID]
-,	[JOB_MONITOR_EVENT_ID]	
-)
-VALUES (
-	1
-,	1
-)
+	SELECT * FROM [dbo].[JOB_MONITOR_EVENT_OPTION]
 
 
-SELECT --* 
-	o.[JOB_MONITOR_EVENT_OPTION_ID]
-,	m.[JOB_ID]
-,	j.[name]
-,	e.[JOB_MONITOR_EVENT_DESCRIPTION]
-FROM [dbo].[JOB_MONITOR_EVENT_OPTION] o
-JOIN [dbo].[JOB_MONITOR] m
-	ON m.[JOB_MONITOR_ID] = o.[JOB_MONITOR_ID]
-JOIN [msdb].[dbo].[sysjobs] j
-	ON j.job_id = m.[JOB_ID]
-JOIN [dbo].[JOB_MONITOR_EVENT] e
-	ON e.[JOB_MONITOR_EVENT_ID] = o.[JOB_MONITOR_EVENT_ID]
+	SELECT * FROM [dbo].[JOB_MONITOR]
 
+	-- test monitor for job step completion
+	EXEC [dbo].[ADD_JOB_TO_MONITOR]
+		@JOB_ID_TO_MONITOR = '8ECB9766-9326-4118-B08D-7F4F6D04DF26'
+	,	@JOB_ID_TO_LAUNCH = 'B5B26BDA-C4E4-4501-89B6-17D0CC394498'
+	,	@JOB_MONITOR_EVENT_ID = 2
+	,	@JOB_STEP_UID_TO_MONITOR='D4305401-41E9-4E93-8AC3-DA2FFA071A60'
 
+	SELECT * FROM [dbo].[JOB_MONITOR_EVENT_OPTION]
 
--- Monitor job step completion
--- JOB: CRM SSAS CUBE PROCESS  STEP: PROCESS CUBE 
--- Doing update because row existed (normally do insert)
-UPDATE [dbo].[JOB_MONITOR]
-SET
-	JOB_ID = '8ECB9766-9326-4118-B08D-7F4F6D04DF26'
-,	JOB_STEP_UID = 'D4305401-41E9-4E93-8AC3-DA2FFA071A60'
-WHERE JOB_MONITOR_ID = 2
-
-
--- insert row into [dbo].[JOB_MONITOR_EVENT_OPTION] for the job_id, JOB_MONITOR_ID
-INSERT [dbo].[JOB_MONITOR_EVENT_OPTION] (
-	[JOB_MONITOR_ID]
-,	[JOB_MONITOR_EVENT_ID]	
-)
-VALUES (
-	2
-,	2	-- step completed successfully
-)
-
+	-- add job to monitor for completion; job already exists in JOB_MONITOR
+	EXEC [dbo].[ADD_JOB_TO_MONITOR]
+		@JOB_ID_TO_MONITOR = 'FBA49241-3339-49F1-9A29-805E097210E3'
+	,	@JOB_ID_TO_LAUNCH = '09D9314E-295B-4A33-A264-128EB3D1B242'
+	,	@JOB_MONITOR_EVENT_ID = 1
