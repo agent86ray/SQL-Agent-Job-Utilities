@@ -16,7 +16,6 @@
 
 	SELECT * FROM [dbo].[JOB_MONITOR_EVENT_OPTION]
 
-
 	SELECT * FROM [dbo].[JOB_MONITOR]
 
 	-- test monitor for job step completion
