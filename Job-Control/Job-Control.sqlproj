@@ -82,5 +82,6 @@
   <ItemGroup>
     <None Include="Scripts\CRM_SQL_AGENT_JOB_QUERIES.sql" />
     <None Include="Scripts\SETUP_JOB_LAUNCH.sql" />
+    <None Include="Scripts\DROP_CREATE_CONSTRAINTS.sql" />
   </ItemGroup>
 </Project>
