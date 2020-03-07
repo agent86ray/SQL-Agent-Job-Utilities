@@ -8,6 +8,24 @@
 
 	SELECT * FROM [dbo].[JOB_MONITOR]
 
+	-- list jobs / job steps monitored and jobs to launch
+	SELECT
+		m.[JOB_ID]	AS [MONITOR_JOB_ID]
+	,	j.[name] AS [MONITOR_JOB_NAME]
+	,	e.[JOB_MONITOR_EVENT_DESCRIPTION]
+	,	o.[JOB_ID_TO_LAUNCH]
+	,	j2.[name] AS [JOB_NAME_TO_LAUNCH]
+	FROM [dbo].[JOB_MONITOR_EVENT_OPTION] o
+	JOIN [dbo].[JOB_MONITOR] m
+		ON m.[JOB_MONITOR_ID] = o.[JOB_MONITOR_ID]
+	JOIN [msdb].[dbo].[sysjobs] j
+		ON j.job_id = m.[JOB_ID]
+	JOIN [dbo].[JOB_MONITOR_EVENT] e
+		ON e.[JOB_MONITOR_EVENT_ID] = o.[JOB_MONITOR_EVENT_ID]
+	JOIN [msdb].[dbo].[sysjobs] j2
+		ON j2.[job_id] = o.[JOB_ID_TO_LAUNCH];
+
+
 	-- test monitor for job completed successfully
 	EXEC [dbo].[ADD_JOB_TO_MONITOR]
 		@JOB_ID_TO_MONITOR = 'FBA49241-3339-49F1-9A29-805E097210E3'
@@ -24,6 +42,7 @@
 	,	@JOB_ID_TO_LAUNCH = 'B5B26BDA-C4E4-4501-89B6-17D0CC394498'
 	,	@JOB_MONITOR_EVENT_ID = 2
 	,	@JOB_STEP_UID_TO_MONITOR='D4305401-41E9-4E93-8AC3-DA2FFA071A60'
+	,	@RUN_ONCE = 1
 
 	SELECT * FROM [dbo].[JOB_MONITOR_EVENT_OPTION]
 
