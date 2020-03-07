@@ -60,6 +60,7 @@
     <Folder Include="Tables" />
     <Folder Include="Scripts" />
     <Folder Include="Stored Procedures" />
+    <Folder Include="Indexes" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\JOB_MONITOR.sql" />
@@ -71,6 +72,8 @@
     <Build Include="Tables\JOB_MONITOR_JOB_HISTORY_STAGING.sql" />
     <Build Include="Stored Procedures\ADD_JOB_TO_MONITOR.sql" />
     <Build Include="Stored Procedures\LAUNCH_JOBS_FROM_QUEUE.sql" />
+    <Build Include="Tables\JOB_LAUNCH_LOG.sql" />
+    <Build Include="Indexes\UX_JOB_MONITOR.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment1.sql" />

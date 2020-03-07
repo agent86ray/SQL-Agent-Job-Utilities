@@ -5,7 +5,8 @@ BEGIN
 		@JOB_LAUNCH_QUEUE_ID	INT
 	,	@JOB_ID_TO_LAUNCH		UNIQUEIDENTIFIER
 	,	@DONE					INT = 0
-	,	@RC						INT;
+	,	@RC						INT
+	,	@RUN_TIME				DATETIME = GETDATE();
 
 	WHILE @DONE = 0
 	BEGIN
@@ -37,6 +38,16 @@ BEGIN
 				SET
 					[JOB_LAUNCH_TIME] = GETDATE()
 				WHERE [JOB_LAUNCH_QUEUE_ID] = @JOB_LAUNCH_QUEUE_ID;
+
+				-- log the job was launched
+				INSERT [dbo].[JOB_LAUNCH_LOG] (
+					[JOB_LAUNCH_QUEUE_ID]
+				,	[RUN_TIME]
+				)
+				VALUES (
+					@JOB_LAUNCH_QUEUE_ID
+				,	@RUN_TIME
+				);
 			END
 		END
 	END
