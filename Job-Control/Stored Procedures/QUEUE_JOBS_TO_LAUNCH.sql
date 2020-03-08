@@ -74,7 +74,7 @@ BEGIN
 
 	--
 	-- queue any jobs that need to be launched based on
-	-- job completion
+	-- jobs completed successfully
 	--
 	INSERT [dbo].[JOB_LAUNCH_QUEUE] (
 		[JOB_MONITOR_EVENT_OPTION_ID]
@@ -98,8 +98,9 @@ BEGIN
 
 	SET @JOBS_QUEUED_COUNT += @@ROWCOUNT;
 
-	-- queue any jobs that need to be launched based on
-	-- job step completion - check [JOB_STEP_UID] from JOB_MONITOR
+	-- queue any jobs that need to be launched based on a
+	-- job step that completed successfully - check [JOB_STEP_UID] 
+	-- from JOB_MONITOR
 	INSERT [dbo].[JOB_LAUNCH_QUEUE] (
 		[JOB_MONITOR_EVENT_OPTION_ID]
 	)
