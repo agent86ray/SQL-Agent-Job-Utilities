@@ -2,9 +2,33 @@
 -- SETUP_JOB_LAUNCH.sql
 --
 
+/*
+	Create sample SQL Agent jobs
+
+*/
+
+-- Details on the sample SQL Agent jobs
+SELECT 
+ 	[name]
+,	[job_id]
+FROM [msdb].[dbo].[sysjobs]
+WHERE [name] LIKE 'SAMPLE%'
+
+
+-- Details on the steps for the SAMPLE DAILY CUBE PROCESS job
+SELECT
+	[step_id]
+,	[step_name]
+,	[step_uid]
+FROM [msdb].[dbo].[sysjobsteps]
+WHERE [job_id] = '9359E080-2084-4218-8F07-4A39071065D4'
+ORDER BY [step_id]
+
+
 -- 
 -- Script to add jobs and job steps to monitor
 --
+
 
 	SELECT * FROM [dbo].[JOB_MONITOR]
 
